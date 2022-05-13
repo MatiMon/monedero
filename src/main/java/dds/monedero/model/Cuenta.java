@@ -11,6 +11,7 @@ import java.util.List;
 
 public class Cuenta {
 
+  //PRIMITIVE OBSESSION
   private double saldo = 0;
   private List<Movimiento> movimientos = new ArrayList<>();
 
@@ -27,6 +28,7 @@ public class Cuenta {
   }
 
   public void poner(double cuanto) {
+    //DUPLICATED CODE en todas las validaciones: extraer en metodos
     if (cuanto <= 0) {
       throw new MontoNegativoException(cuanto + ": el monto a ingresar debe ser un valor positivo");
     }
@@ -39,12 +41,14 @@ public class Cuenta {
   }
 
   public void sacar(double cuanto) {
+    //DUPLICATED CODE en todas las validaciones: extraer en metodos
     if (cuanto <= 0) {
       throw new MontoNegativoException(cuanto + ": el monto a ingresar debe ser un valor positivo");
     }
     if (getSaldo() - cuanto < 0) {
       throw new SaldoMenorException("No puede sacar mas de " + getSaldo() + " $");
     }
+    // TEMPORARY FIELD: hacer la resta directa
     double montoExtraidoHoy = getMontoExtraidoA(LocalDate.now());
     double limite = 1000 - montoExtraidoHoy;
     if (cuanto > limite) {
@@ -54,6 +58,7 @@ public class Cuenta {
     new Movimiento(LocalDate.now(), cuanto, false).agregateA(this);
   }
 
+  //LONG PARAMETER LIST o DATA CLUMP: agregarMovimiento(movimiento)
   public void agregarMovimiento(LocalDate fecha, double cuanto, boolean esDeposito) {
     Movimiento movimiento = new Movimiento(fecha, cuanto, esDeposito);
     movimientos.add(movimiento);
@@ -61,6 +66,7 @@ public class Cuenta {
 
   public double getMontoExtraidoA(LocalDate fecha) {
     return getMovimientos().stream()
+        //no se si es code smell pero la segunda condicion del filter podria haber sido: movimiento.esDeLaFecha(fecha)
         .filter(movimiento -> !movimiento.isDeposito() && movimiento.getFecha().equals(fecha))
         .mapToDouble(Movimiento::getMonto)
         .sum();

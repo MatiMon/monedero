@@ -36,20 +36,22 @@ public class Movimiento {
     return this.fecha.equals(fecha);
   }
 
+  //parecen TYPE TEST aunque puede ser necesario por el metodo "poner" de Cuenta. Podriamos quedarnos con 1 solo
   public boolean isDeposito() {
     return esDeposito;
   }
-
   public boolean isExtraccion() {
     return !esDeposito;
   }
 
+  //MISPLACED METHOD: deberia ir en Cuenta
   public void agregateA(Cuenta cuenta) {
     cuenta.setSaldo(calcularValor(cuenta));
     cuenta.agregarMovimiento(fecha, monto, esDeposito);
   }
 
   public double calcularValor(Cuenta cuenta) {
+    //TYPE TEST: generar una abstraccion para Deposito y otra para Extraccion
     if (esDeposito) {
       return cuenta.getSaldo() + getMonto();
     } else {
